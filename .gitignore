@@ -1,4 +1,4 @@
-./build/*
-./*.elf
-./*.dol
-./*.kate-swp
+build/*
+*.elf
+*.dol
+*.kate-swp
