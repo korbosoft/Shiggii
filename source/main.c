@@ -8,8 +8,6 @@
 
 #include "main.h"
 
-#include "bz_pif_it.h"
-#include "font_ttf.h"
 
 #define DARK_BG 0x282828FF
 #define LIGHT_BG 0xF5EDCAFF
@@ -31,18 +29,25 @@ int main(int argc, char **argv) {
     GRRMOD_SetMOD(bz_pif_it, bz_pif_it_size);
     GRRMOD_Start();
     init_textures();
-
+    int timer = 0;
     int frameCount = 10;
-    int shigCount = 0;
+    unsigned int shigCount = 0;
     char str[38];
     int theme = 1;
     double sx = 0, sy = 0, sa = 0;
+    signed int timerSeconds = -3;
     WPADData *wd;
     GRRLIB_ttfFont* font = GRRLIB_LoadTTF(font_ttf, font_ttf_size);
+    AESNDPB* shigCompleteVoice;
 
     while (1) {
-
-
+        timer++;
+        if (timer >= 60) {
+            timer = 0;
+            --timerSeconds;
+            if ((timerSeconds < -1) & !(timerSeconds < -2)) timerSeconds = -1;
+            if (timerSeconds < -3) timerSeconds = -3;
+        }
         WPAD_ScanPads();
         PAD_ScanPads();
         wd = WPAD_Data(0);
@@ -71,24 +76,38 @@ int main(int argc, char **argv) {
                     theme %= 2;
                 }
             }
-
+        if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_PLUS) || (PAD_ButtonsDown(0) & PAD_BUTTON_START)) {
+            shigCount = 0;
+            timerSeconds = 59;
+            timer = 0;
+        }
             if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_2) || (PAD_ButtonsDown(0) & PAD_TRIGGER_Z)) sx = sy = sa = 0;
             ++frameIndex;
             frameIndex %= frameCount;
-            if (!frameIndex) {
+            if (!frameIndex & (timerSeconds > -1)) {
+                shigCompleteVoice = AESND_AllocateVoice(VoiceCallBack);
+                if (shigCompleteVoice) {
+
+                    AESND_PlayVoice(shigCompleteVoice, VOICE_STEREO16, &concrete_raw, concrete_raw_size, 48000, 0, 0);
+                }
                 ++shigCount;
-                if (WPAD_IsSpeakerEnabled(0));
             }
         }
         if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_1) || (PAD_ButtonsDown(0) & PAD_BUTTON_X)) {
-            GRRLIB_ScrShot("shiggy.png");
+            GRRLIB_ScrShot("sd:/shiggy.png");
         }
 
         GRRLIB_texImg *themeButtonTex = themeButtonIndex[theme];
 
         GRRLIB_SetAntiAliasing(false);
-        GRRLIB_DrawPart(sx, sy, 0+(64*frameIndex), 0, 64, 64, shiggyTex, sa, 1, 1, GRRLIB_WHITE);
-        sprintf(str, "%u shigs", shigCount);
+        GRRLIB_DrawPart(sx+320, sy, 0+(64*frameIndex), 0, 64, 64, shiggyTex, sa, 1, 1, GRRLIB_WHITE);
+        GRRLIB_SetMidHandle(shiggyTex, true);
+        if (timerSeconds > -1) {
+            double deciSeconds = 10-((double)timer/60*10);
+            sprintf(str, "%u shigs, %u.%us left", shigCount, timerSeconds, (unsigned int)deciSeconds);
+        } else if (timerSeconds == -1) {
+            sprintf(str, "%u shigs in 60s", shigCount);
+        } else sprintf(str, "Press +/START to start timer");
         GRRLIB_SetAntiAliasing(true);
         if (theme) {
             GRRLIB_DrawImg(536, 384, themeButtonTex, 0, 1, 1, DARK_FG);
@@ -103,6 +122,8 @@ int main(int argc, char **argv) {
     WPAD_Shutdown();
     free_textures();
     GRRMOD_End();
+    GRRLIB_FreeTTF(font);
     GRRLIB_Exit();
     exit(0);
+    return 0;
 }
