@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <gccore.h>
 #include <wiiuse/wpad.h>
-#include <asndlib.h>
-#include <mp3player.h>
+#include <aesndlib.h>
+#include <grrmod.h>
 #include <math.h>
 
 #include "main.h"
 
-#include "shiggy_loop_mp3.h"
+#include "bz_pif_it.h"
 #include "font_ttf.h"
 
 #define DARK_BG 0x282828FF
@@ -21,18 +21,18 @@ int frameIndex = 0;
 
 int main(int argc, char **argv) {
     GRRLIB_Init();
-    GRRLIB_SetAntiAliasing(false);
 
     WPAD_Init();
     WPAD_SetDataFormat(0, WPAD_FMT_BTNS_ACC_IR);
     PAD_Init();
 
-    ASND_Init();
-    MP3Player_Init();
-
+    AESND_Init();
+    GRRMOD_Init(true);
+    GRRMOD_SetMOD(bz_pif_it, bz_pif_it_size);
+    GRRMOD_Start();
     init_textures();
 
-    int frameCount = sizeof(frames) / sizeof(GRRLIB_texImg * );
+    int frameCount = 10;
     int shigCount = 0;
     char str[38];
     int theme = 1;
@@ -41,9 +41,7 @@ int main(int argc, char **argv) {
     GRRLIB_ttfFont* font = GRRLIB_LoadTTF(font_ttf, font_ttf_size);
 
     while (1) {
-        if (!MP3Player_IsPlaying()) {
-            MP3Player_PlayBuffer(shiggy_loop_mp3, shiggy_loop_mp3_size, NULL);
-        }
+
 
         WPAD_ScanPads();
         PAD_ScanPads();
@@ -53,10 +51,10 @@ int main(int argc, char **argv) {
             sy = wd->ir.y;
             sa = wd->ir.angle;
         }
-        if (abs(PAD_StickX(0)) > 25.4) sx += PAD_StickX(0)/25.4;
-        if (abs((double)PAD_StickY(0)) > 25.4) sy -= PAD_StickY(0)/25.4;
-        if (abs(PAD_TriggerL(0)/255) > 0.95) --sa;
-        if (abs(PAD_TriggerR(0)/255) > 0.95) ++sa;
+        if (abs(PAD_StickX(0)) > 25) sx += PAD_StickX(0)/20;
+        if (abs(PAD_StickY(0)) > 25) sy -= PAD_StickY(0)/20;
+        if (PAD_ButtonsHeld(0) & PAD_TRIGGER_L) --sa;
+        if (PAD_ButtonsHeld(0) & PAD_TRIGGER_R) ++sa;
 
         if (theme) {
             GRRLIB_FillScreen(DARK_BG);
@@ -73,19 +71,25 @@ int main(int argc, char **argv) {
                     theme %= 2;
                 }
             }
+
             if (PAD_ButtonsDown(0) & PAD_TRIGGER_Z) sx = sy = sa = 0;
             ++frameIndex;
             frameIndex %= frameCount;
-            if (!frameIndex) ++shigCount;
+            if (!frameIndex) {
+                ++shigCount;
+                if (WPAD_IsSpeakerEnabled(0));
+            }
+        }
+        if ((WPAD_ButtonsHeld(0) & (WPAD_BUTTON_A & WPAD_BUTTON_B)) || (PAD_ButtonsHeld(0) & PAD_BUTTON_X)) {
+            GRRLIB_ScrShot("shiggy.png");
         }
 
-
-        GRRLIB_texImg *frame = frames[frameIndex];
-        GRRLIB_SetMidHandle(frame, true);
         GRRLIB_texImg *themeButtonTex = themeButtonIndex[theme];
 
-        GRRLIB_DrawImg(sx, sy, frame, sa, .25, .25, GRRLIB_WHITE);
-        sprintf(str, "%d shigs", shigCount);
+        GRRLIB_SetAntiAliasing(false);
+        GRRLIB_DrawPart(sx, sy, 0+(64*frameIndex), 0, 64, 64, shiggyTex, sa, 1, 1, GRRLIB_WHITE);
+        sprintf(str, "%u shigs", shigCount);
+        GRRLIB_SetAntiAliasing(true);
         if (theme) {
             GRRLIB_DrawImg(536, 384, themeButtonTex, 0, 1, 1, DARK_FG);
             GRRLIB_PrintfTTF(320-(GRRLIB_WidthTTF(font, str, 24)/2), 32, font, str, 24, DARK_FG);
@@ -94,8 +98,11 @@ int main(int argc, char **argv) {
             GRRLIB_PrintfTTF(320-(GRRLIB_WidthTTF(font, str, 24)/2), 32, font, str, 24, LIGHT_FG);
         }
         GRRLIB_Render();
+        // for (int i = 1; i < 20; i++) VIDEO_WaitVSync();
     }
+    WPAD_Shutdown();
     free_textures();
+    GRRMOD_End();
     GRRLIB_Exit();
-    return 0;
+    exit(0);
 }
