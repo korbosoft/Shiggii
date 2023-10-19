@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
                 }
             }
 
-            if (PAD_ButtonsDown(0) & PAD_TRIGGER_Z) sx = sy = sa = 0;
+            if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_2) || (PAD_ButtonsDown(0) & PAD_TRIGGER_Z)) sx = sy = sa = 0;
             ++frameIndex;
             frameIndex %= frameCount;
             if (!frameIndex) {
@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
                 if (WPAD_IsSpeakerEnabled(0));
             }
         }
-        if ((WPAD_ButtonsHeld(0) & (WPAD_BUTTON_A & WPAD_BUTTON_B)) || (PAD_ButtonsHeld(0) & PAD_BUTTON_X)) {
+        if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_1) || (PAD_ButtonsDown(0) & PAD_BUTTON_X)) {
             GRRLIB_ScrShot("shiggy.png");
         }
 
