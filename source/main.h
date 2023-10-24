@@ -4,6 +4,7 @@
 #include "shiggy1_png.h"
 #include "shiggy2_png.h"
 #include "shiggy3_png.h"
+#include "shiggy4_png.h"
 #include "bz_pif_it.h"
 #include "font_ttf.h"
 #include "light_png.h"
@@ -12,22 +13,22 @@
 #include "concrete_lowquality_raw.h"
 #include "concrete_reversed_raw.h"
 #include "concrete_glitch_raw.h"
+#include "yayayayay_raw.h"
 #include "explod_raw.h"
 
+#define SHIGGY_SKINS 6
 #define DARK_BG 0x282828FF
 #define LIGHT_BG 0xF5EDCAFF
 #define DARK_FG 0xD4BE98FF
 #define LIGHT_FG 0x644735FF
 #define GRRLIB_WHITE 0xFFFFFFFF
 
-double aspectRatioScale(double x) {return x/(4.f/3.f);}
-
 GRRLIB_texImg *themeButtonIndex[2];
-GRRLIB_texImg *shiggyTex[4];
+GRRLIB_texImg *shiggyTex[5];
 
 struct shiggyData {
     double x, y, angle;
-    int skin;
+    unsigned int skinNum, shigCount;
 };
 
 void init_textures() {
@@ -38,6 +39,7 @@ void init_textures() {
     shiggyTex[1] = GRRLIB_LoadTexture(shiggy1_png);
     shiggyTex[2] = GRRLIB_LoadTexture(shiggy2_png);
     shiggyTex[3] = GRRLIB_LoadTexture(shiggy3_png);
+    shiggyTex[4] = GRRLIB_LoadTexture(shiggy4_png);
 }
 
 void free_textures() {
