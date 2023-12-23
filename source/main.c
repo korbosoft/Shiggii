@@ -192,10 +192,10 @@ int main(int argc, char **argv) {
             if (deciseconds >= 10) deciseconds = 9;
             sprintf(str, "%u shigs, %u.%us left", shiggy.shigCount, timerSeconds, (int)deciseconds);
         } else if (timerSeconds == TIMER_STATE_TIMEOVER) {
-            sprintf(str, "%u shigs in 60Downs", shiggy.shigCount);
+            sprintf(str, "%u shigs in 60s", shiggy.shigCount);
         } else if (timerSeconds <= TIMER_STATE_GAMEOVER) {
             sprintf(str, "%u shigs", shiggy.shigCount);
-        } else sprintf(str, "%u", shiggy.hyperTimer);
+        } else sprintf(str, "+/START: Start Timer, -/B: Infinite");
         GRRLIB_SetAntiAliasing(shiggy.skinNum != 4);
         if (theme) {
             GRRLIB_DrawImg(536, 384, themeButtonTex, 0, 1, 1, DARK_FG);
