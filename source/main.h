@@ -1,5 +1,4 @@
 #include <grrlib.h>
-
 #include "shiggy0_png.h"
 #include "shiggy1_png.h"
 #include "shiggy2_png.h"
@@ -16,6 +15,9 @@
 #include "yayayayay_raw.h"
 #include "explod_raw.h"
 
+#define TIMER_STATE_GAMEOVER -4
+#define TIMER_STATE_TIMEOVER -1
+
 #define SHIGGY_SKINS 6
 #define DARK_BG 0x282828FF
 #define LIGHT_BG 0xF5EDCAFF
@@ -26,9 +28,22 @@
 GRRLIB_texImg *themeButtonIndex[2];
 GRRLIB_texImg *shiggyTex[5];
 
+int hyperYCoords[10] = {
+    0,
+    10,
+    19,
+    26,
+    31,
+    32,
+    31,
+    26,
+    19,
+    10
+};
+
 struct shiggyData {
     double x, y, angle;
-    unsigned int skinNum, shigCount;
+    unsigned int skinNum, shigCount, hyperTimer;
 };
 
 void init_textures() {

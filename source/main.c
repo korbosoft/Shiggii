@@ -21,7 +21,10 @@ int timer = 0;
  * handler for controls so my code is less shit lmao
  */
 void buttonHandler() {
-    if ((WPAD_ButtonsDown(0) != 0) || (PAD_ButtonsDown(0) != 0)) {
+    if ((WPAD_ButtonsHeld(0) & WPAD_BUTTON_A) || (PAD_ButtonsHeld(0) & PAD_BUTTON_A)) {
+        if (shiggy.hyperTimer == 0) shiggy.hyperTimer = 10;
+    }
+    if ((WPAD_ButtonsDown(0)) || (PAD_ButtonsDown(0))) {
         if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_A) || (PAD_ButtonsDown(0) & PAD_BUTTON_A)) {
             if (GRRLIB_PtInRect(536, 384, 64, 64, shiggy.x, shiggy.y)) {
                 ++theme;
@@ -51,7 +54,7 @@ void buttonHandler() {
     if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_2) || (PAD_ButtonsDown(0) & PAD_TRIGGER_Z)) shiggy.x = shiggy.y = shiggy.angle = 0;
     ++frameIndex;
     frameIndex %= frameCount;
-    if (!frameIndex & ((timerSeconds > -1) || (timerSeconds <= -5))) {
+    if (!frameIndex & ((timerSeconds >= 0) || (timerSeconds <= -5))) {
         shigCompleteVoice = AESND_AllocateVoice(VoiceCallBack);
         if (shigCompleteVoice) switch (shiggy.skinNum) {
                 case 1:
@@ -125,10 +128,10 @@ int main(int argc, char **argv) {
     GRRMOD_Start();
 // the variable chunk (oooh! ahhh!)
     char str[38];
-    int texture; // aaaaAAAAAHHH
+    int texture = 0; // aaaaAAAAAHHH
     WPADData *wd;
     GRRLIB_ttfFont* font = GRRLIB_LoadTTF(font_ttf, font_ttf_size);
-    shiggy.x = shiggy.y = shiggy.angle = shiggy.skinNum = shiggy.shigCount = 0;
+    shiggy.x = shiggy.y = shiggy.angle = shiggy.skinNum = shiggy.shigCount = shiggy.hyperTimer = 0; // lmfao
 // main loop
     while (1) {
         timer++;
@@ -147,10 +150,12 @@ int main(int argc, char **argv) {
             shiggy.y = wd->ir.y;
             shiggy.angle = wd->ir.angle;
         }
+
         if (abs(PAD_StickX(0)) > 25) shiggy.x += PAD_StickX(0)/20;
         if (abs(PAD_StickY(0)) > 25) shiggy.y -= PAD_StickY(0)/20;
         if (PAD_ButtonsHeld(0) & PAD_TRIGGER_L) --shiggy.angle;
         if (PAD_ButtonsHeld(0) & PAD_TRIGGER_R) ++shiggy.angle;
+        if (shiggy.hyperTimer) shiggy.hyperTimer--;
 
         if (theme) {
             GRRLIB_FillScreen(DARK_BG);
@@ -160,7 +165,7 @@ int main(int argc, char **argv) {
 
         if (WPAD_ButtonsDown(0) & WPAD_BUTTON_HOME) {
             // break;
-        } else if (WPAD_ButtonsDown(0) || PAD_ButtonsDown(0)) buttonHandler();
+        } else if (WPAD_ButtonsHeld(0) || PAD_ButtonsHeld(0)) buttonHandler();
 
         GRRLIB_texImg *themeButtonTex = themeButtonIndex[theme];
         GRRLIB_SetAntiAliasing(shiggy.skinNum == 3);
@@ -175,23 +180,22 @@ int main(int argc, char **argv) {
                 texture = 3;
                 break;
             case 5:
-                texture = 4;
                 break;
             default:
                 texture = 0;
                 break;
         }
-        GRRLIB_DrawPart(shiggy.x+320, shiggy.y, 0+(64*frameIndex), 0, 64, 64, shiggyTex[texture], shiggy.angle, 2, 2, GRRLIB_WHITE);
+        GRRLIB_DrawPart(shiggy.x+320, shiggy.y-(hyperYCoords[10 - shiggy.hyperTimer]), frameIndex*64, 0, 64, 64, shiggyTex[texture], shiggy.angle, 2, 2, GRRLIB_WHITE);
         GRRLIB_SetMidHandle(shiggyTex[texture], true);
-        if (timerSeconds > -1) {
+        if (timerSeconds > TIMER_STATE_TIMEOVER) {
             double deciseconds = 10-((double)timer/60*10);
             if (deciseconds >= 10) deciseconds = 9;
             sprintf(str, "%u shigs, %u.%us left", shiggy.shigCount, timerSeconds, (int)deciseconds);
-        } else if (timerSeconds == -1) {
-            sprintf(str, "%u shigs in 60s", shiggy.shigCount);
-        } else if (timerSeconds <= -4) {
+        } else if (timerSeconds == TIMER_STATE_TIMEOVER) {
+            sprintf(str, "%u shigs in 60Downs", shiggy.shigCount);
+        } else if (timerSeconds <= TIMER_STATE_GAMEOVER) {
             sprintf(str, "%u shigs", shiggy.shigCount);
-        } else sprintf(str, "+/START: Start Timer, -/B: Infinite");
+        } else sprintf(str, "%u", shiggy.hyperTimer);
         GRRLIB_SetAntiAliasing(shiggy.skinNum != 4);
         if (theme) {
             GRRLIB_DrawImg(536, 384, themeButtonTex, 0, 1, 1, DARK_FG);
@@ -213,4 +217,4 @@ int main(int argc, char **argv) {
     exit(0);
     return 0;
 }
-//
+// comment
