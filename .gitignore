@@ -2,3 +2,4 @@ build/*
 *.elf
 *.dol
 *.kate-swp
+*.zip
