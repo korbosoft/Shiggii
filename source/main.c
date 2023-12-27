@@ -23,7 +23,8 @@ unsigned int skinNum = 0;
  */
 void buttonHandler() {
     if ((WPAD_ButtonsHeld(0) & WPAD_BUTTON_A) || (PAD_ButtonsHeld(0) & PAD_BUTTON_A)) {
-        if (shiggy.hyperTimer == 0) shiggy.hyperTimer = 9;
+        if (shiggy.hyperTimer == 0)
+            shiggy.hyperTimer = 9;
     }
     if ((WPAD_ButtonsDown(0)) || (PAD_ButtonsDown(0))) {
     if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_PLUS) || (PAD_ButtonsDown(0) & PAD_BUTTON_START)) {
@@ -40,7 +41,8 @@ void buttonHandler() {
     if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_MINUS) || (PAD_ButtonsDown(0) & PAD_BUTTON_B)) {
         if ((WPAD_ButtonsHeld(0) & WPAD_BUTTON_B) || (PAD_ButtonsHeld(0) & PAD_BUTTON_Y)) {
             --skinNum;
-            if ((signed)skinNum < 0) skinNum = SKIN_AMOUNT-1;
+            if ((signed)skinNum < 0)
+                skinNum = SKIN_AMOUNT-1;
             shiggy.Skin = shiggySkins[skinNum];
             return;
         }
@@ -137,10 +139,13 @@ int main(int argc, char **argv) {
         if (timer >= 60) {
             timer = 0;
             --timerSeconds;
-            if ((timerSeconds < -1) & !(timerSeconds < -2)) timerSeconds = -1;
-            if ((timerSeconds < -3) & !(timerSeconds <= -5)) timerSeconds = -3;
+            if ((timerSeconds < -1) & !(timerSeconds < -2))
+                timerSeconds = -1;
+            if ((timerSeconds < -3) & !(timerSeconds <= -5))
+                timerSeconds = -3;
         }
-		if (HWButton != -1) break;
+		if (HWButton != -1)
+            break;
         WPAD_ScanPads();
         PAD_ScanPads();
         wd = WPAD_Data(0);
@@ -150,21 +155,27 @@ int main(int argc, char **argv) {
             shiggy.angle = wd->ir.angle;
         }
 
-        if (abs(PAD_StickX(0)) > 25) shiggy.x += PAD_StickX(0)/20;
-        if (abs(PAD_StickY(0)) > 25) shiggy.y -= PAD_StickY(0)/20;
-        if (PAD_ButtonsHeld(0) & PAD_TRIGGER_L) --shiggy.angle;
-        if (PAD_ButtonsHeld(0) & PAD_TRIGGER_R) ++shiggy.angle;
+        if (abs(PAD_StickX(0)) > 25)
+            shiggy.x += PAD_StickX(0)/20;
+        if (abs(PAD_StickY(0)) > 25)
+            shiggy.y -= PAD_StickY(0)/20;
+        if (PAD_ButtonsHeld(0) & PAD_TRIGGER_L)
+            --shiggy.angle;
+        if (PAD_ButtonsHeld(0) & PAD_TRIGGER_R)
+            ++shiggy.angle;
         if (shiggy.hyperTimer) shiggy.hyperTimer--;
 
-        if (WPAD_ButtonsDown(0) & WPAD_BUTTON_HOME) {
-            // break;
-        } else if (WPAD_ButtonsHeld(0) || PAD_ButtonsHeld(0)) buttonHandler();
+        GRRLIB_FillScreen(DARK_BG);
+
+        if (WPAD_ButtonsHeld(0) || PAD_ButtonsHeld(0))
+            buttonHandler();
         GRRLIB_SetAntiAliasing(shiggy.Skin.blurred);
         GRRLIB_DrawPart(shiggy.x+320, shiggy.y-(hyperYCoords[10 - shiggy.hyperTimer]), frameIndex*64, 0, 64, 64, shiggyTex[shiggy.Skin.texNum], shiggy.angle, 2, 2, GRRLIB_WHITE);
         GRRLIB_SetMidHandle(shiggyTex[shiggy.Skin.texNum], true);
         if (timerSeconds > TIMER_STATE_TIMEOVER) {
             double deciseconds = 10-((double)timer/60*10);
-            if (deciseconds >= 10) deciseconds = 9;
+            if (deciseconds >= 10)
+                deciseconds = 9;
             sprintf(str, "%u shigs, %u.%us left", shiggy.shigCount, timerSeconds, (int)deciseconds);
         } else if (timerSeconds == TIMER_STATE_TIMEOVER) {
             sprintf(str, "%u shigs in 60s", shiggy.shigCount);
@@ -182,7 +193,8 @@ int main(int argc, char **argv) {
     GRRMOD_End();
     GRRLIB_FreeTTF(font);
     GRRLIB_Exit();
-    if (HWButton != -1) SYS_ResetSystem(HWButton, 0, 0);
+    if (HWButton != -1)
+        SYS_ResetSystem(HWButton, 0, 0);
     exit(0);
     return 0;
 }
