@@ -15,7 +15,7 @@ include $(DEVKITPPC)/wii_rules
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-TARGET		:=	$(notdir $(CURDIR))
+TARGET		:=	boot
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
@@ -111,6 +111,22 @@ clean:
 run:
 	wiiload $(TARGET).dol
 
+
+#---------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------
+test:
+	dolphin-emu $(TARGET).dol
+
+
+#---------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------
+release:
+	mkdir -p Shiggii
+	cp boot.dol meta.xml icon.png Shiggii/
+	zip -rv Shiggii ./Shiggii/
+	rm -rf ./Shiggii/
 
 #---------------------------------------------------------------------------------
 else
