@@ -5,7 +5,7 @@
 #include "shiggy3_png.h"
 #include "shiggy4_png.h"
 #include "bz_pif_it.h"
-#include "font_ttf.h"
+#include "font_png.h"
 #include "concrete_raw.h"
 #include "concrete_lowquality_raw.h"
 #include "concrete_reverse_raw.h"
@@ -29,6 +29,7 @@
 #define SKIN_AMOUNT 6
 
 GRRLIB_texImg *shiggyTex[6];
+GRRLIB_texImg *font;
 
 int hyperYCoords[10] = {
     0,
@@ -73,6 +74,8 @@ void init_textures() {
     shiggyTex[5] = GRRLIB_LoadTexture(shiggy4_png);
     GRRLIB_BMFX_FlipH(shiggyTex[0], shiggyTex[3]);
     GRRLIB_FlushTex(shiggyTex[3]);
+    font = GRRLIB_LoadTexture(font_png);
+    GRRLIB_InitTileSet(font, 8, 16, 32);
 }
 
 void modify_textures() {

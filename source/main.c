@@ -128,9 +128,8 @@ int main(int argc, char **argv) {
     GRRMOD_Start();
 // the variable chunk (oooh! ahhh!)
     char str[38];
-    // int texture = 0; // aaaaAAAAAHHH
+    // int texture = 0; // aaaaAAAAAHHH // i only commented this line out instead of deleting it because the original comment was funny to me
     WPADData *wd;
-    GRRLIB_ttfFont* font = GRRLIB_LoadTTF(font_ttf, font_ttf_size);
     shiggy.x = shiggy.y = shiggy.angle = shiggy.shigCount = shiggy.hyperTimer = 0; // lmfao
     shiggy.Skin = shiggySkins[0];
 // main loop
@@ -182,7 +181,7 @@ int main(int argc, char **argv) {
             sprintf(str, "%u shigs", shiggy.shigCount);
         } else sprintf(str, "+/START: Start Timer, -/B: Infinite");
         GRRLIB_SetAntiAliasing(false);
-        GRRLIB_PrintfTTF(320-(GRRLIB_WidthTTF(font, str, 24)/2), 32, font, str, 24, DARK_FG);
+        GRRLIB_Printf(320-(strlen(str)*8), 32, font, DARK_FG, 2, str);
         GRRLIB_Render();
         // for (int i = 1; i < 20; i++) VIDEO_WaitVsync();
     }
@@ -190,7 +189,6 @@ int main(int argc, char **argv) {
     WPAD_Shutdown();
     free_textures();
     GRRMOD_End();
-    GRRLIB_FreeTTF(font);
     GRRLIB_Exit();
     if (HWButton != -1)
         SYS_ResetSystem(HWButton, 0, 0);
