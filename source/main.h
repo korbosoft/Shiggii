@@ -75,7 +75,7 @@ void init_textures() {
     GRRLIB_BMFX_FlipH(shiggyTex[0], shiggyTex[3]);
     GRRLIB_FlushTex(shiggyTex[3]);
     font = GRRLIB_LoadTexture(font_png);
-    GRRLIB_InitTileSet(font, 8, 16, 32);
+    GRRLIB_InitTileSet(font, 9, 16, 32);
 }
 
 void modify_textures() {

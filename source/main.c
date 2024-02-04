@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
             sprintf(str, "%u shigs", shiggy.shigCount);
         } else sprintf(str, "+/START: Start Timer, -/B: Infinite");
         GRRLIB_SetAntiAliasing(false);
-        GRRLIB_Printf(320-(strlen(str)*8), 32, font, DARK_FG, 2, str);
+        GRRLIB_Printf(320-(strlen(str)*9), 32, font, DARK_FG, 2, str);
         GRRLIB_Render();
         // for (int i = 1; i < 20; i++) VIDEO_WaitVsync();
     }
