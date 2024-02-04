@@ -3,6 +3,7 @@
 #include "shiggy1_png.h"
 #include "shiggy2_png.h"
 #include "shiggy3_png.h"
+#include "shiggy4_png.h"
 #include "bz_pif_it.h"
 #include "font_ttf.h"
 #include "concrete_raw.h"
@@ -44,7 +45,6 @@ int hyperYCoords[10] = {
 
 struct ShiggySkin {
     unsigned int texNum, sndNum;
-    bool blurred;
     char *name[10];
 };
 
@@ -56,12 +56,12 @@ struct ShiggyData {
 };
 
 struct ShiggySkin shiggySkins[6] = {
-    {0, SOUND_DEFAULT,    false, false,     {"Shiggy"}},
-    {1, SOUND_GLITCH,     false, false,  {"Corrupted"}},
-    {2, SOUND_EXPLOD,     false, false, {"Shigsplode"}},
-    {5, SOUND_LOWQUALITY, true,  false,     {"Shoggy"}},
-    {3, SOUND_REVERSE,    false, false,     {"yggihS"}},
-    {4, SOUND_TROLOLO,    false, false,    {"Shiggey"}}
+    {0, SOUND_DEFAULT,        {"Shiggy"}},
+    {1, SOUND_GLITCH,      {"Corrupted"}},
+    {2, SOUND_EXPLOD,     {"Shigsplode"}},
+    {5, SOUND_LOWQUALITY,     {"Shoggy"}},
+    {3, SOUND_REVERSE,        {"yggihS"}},
+    {4, SOUND_TROLOLO,       {"Shiggey"}}
 };
 
 void init_textures() {
@@ -70,11 +70,9 @@ void init_textures() {
     shiggyTex[2] = GRRLIB_LoadTexture(shiggy2_png);
     shiggyTex[3] = GRRLIB_CreateEmptyTexture(shiggyTex[0]->w, shiggyTex[0]->h);
     shiggyTex[4] = GRRLIB_LoadTexture(shiggy3_png);
-    shiggyTex[5] = GRRLIB_CreateEmptyTexture(shiggyTex[0]->w, shiggyTex[0]->h);
+    shiggyTex[5] = GRRLIB_LoadTexture(shiggy4_png);
     GRRLIB_BMFX_FlipH(shiggyTex[0], shiggyTex[3]);
     GRRLIB_FlushTex(shiggyTex[3]);
-    GRRLIB_BMFX_Blur(shiggyTex[0], shiggyTex[5], 1);
-    GRRLIB_FlushTex(shiggyTex[5]);
 }
 
 void modify_textures() {

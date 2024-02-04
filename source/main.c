@@ -169,7 +169,6 @@ int main(int argc, char **argv) {
 
         if (WPAD_ButtonsHeld(0) || PAD_ButtonsHeld(0))
             buttonHandler();
-        GRRLIB_SetAntiAliasing(shiggy.Skin.blurred);
         GRRLIB_DrawPart(shiggy.x+320, shiggy.y-(hyperYCoords[10 - shiggy.hyperTimer]), frameIndex*64, 0, 64, 64, shiggyTex[shiggy.Skin.texNum], shiggy.angle, 2, 2, GRRLIB_WHITE);
         GRRLIB_SetMidHandle(shiggyTex[shiggy.Skin.texNum], true);
         if (timerSeconds > TIMER_STATE_TIMEOVER) {
