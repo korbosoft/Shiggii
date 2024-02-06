@@ -4,6 +4,15 @@
 #include "shiggy2_png.h"
 #include "shiggy3_png.h"
 #include "shiggy4_png.h"
+#include "aro_png.h"
+#include "ace_png.h"
+#include "aroace_png.h"
+#include "agndr_png.h"
+#include "trans_png.h"
+#include "lgbtq_png.h"
+#include "gay_png.h"
+#include "les_png.h"
+#include "bi_png.h"
 #include "bz_pif_it.h"
 #include "font_png.h"
 #include "concrete_raw.h"
@@ -26,9 +35,9 @@
 #define DARK_BG      0x282828FF
 #define DARK_FG      0xD4BE98FF
 #define GRRLIB_WHITE 0xFFFFFFFF
-#define SKIN_AMOUNT 6
+#define SKIN_AMOUNT 17
 
-GRRLIB_texImg *shiggyTex[6];
+GRRLIB_texImg *shiggyTex[SKIN_AMOUNT];
 GRRLIB_texImg *font;
 
 int hyperYCoords[10] = {
@@ -46,7 +55,7 @@ int hyperYCoords[10] = {
 
 struct ShiggySkin {
     unsigned int texNum, sndNum;
-    char *name[10];
+    char name[17];
 };
 
 struct ShiggyData {
@@ -56,13 +65,22 @@ struct ShiggyData {
     struct ShiggySkin Skin;
 };
 
-struct ShiggySkin shiggySkins[6] = {
-    {0, SOUND_DEFAULT,        {"Shiggy"}},
-    {1, SOUND_GLITCH,      {"Corrupted"}},
-    {2, SOUND_EXPLOD,     {"Shigsplode"}},
-    {5, SOUND_LOWQUALITY,     {"Shoggy"}},
-    {3, SOUND_REVERSE,        {"yggihS"}},
-    {4, SOUND_TROLOLO,       {"Shiggey"}}
+struct ShiggySkin shiggySkins[SKIN_AMOUNT] = {
+    {0, SOUND_DEFAULT,            {"Shiggy"}},
+    {1, SOUND_GLITCH,          {"Corrupted"}},
+    {2, SOUND_EXPLOD,         {"Shigsplode"}},
+    {5, SOUND_LOWQUALITY,         {"Shoggy"}},
+    {3, SOUND_REVERSE,            {"yggihS"}},
+    {4, SOUND_TROLOLO,           {"Shiggey"}},
+    {6, SOUND_DEFAULT,         {"Aromantic"}},
+    {7, SOUND_DEFAULT,           {"Asexual"}},
+    {8, SOUND_DEFAULT, {"Aromantic Asexual"}},
+    {9, SOUND_DEFAULT,           {"Agender"}},
+    {10, SOUND_DEFAULT,            {"Trans"}},
+    {11, SOUND_DEFAULT,           {"LGBTQ+"}},
+    {12, SOUND_DEFAULT,          {"Lesbian"}},
+    {13, SOUND_DEFAULT,              {"Gay"}},
+    {14, SOUND_DEFAULT,         {"Bisexual"}},
 };
 
 void init_textures() {
@@ -72,14 +90,19 @@ void init_textures() {
     shiggyTex[3] = GRRLIB_CreateEmptyTexture(shiggyTex[0]->w, shiggyTex[0]->h);
     shiggyTex[4] = GRRLIB_LoadTexture(shiggy3_png);
     shiggyTex[5] = GRRLIB_LoadTexture(shiggy4_png);
+    shiggyTex[6] = GRRLIB_LoadTexture(aro_png);
+    shiggyTex[7] = GRRLIB_LoadTexture(ace_png);
+    shiggyTex[8] = GRRLIB_LoadTexture(aroace_png);
+    shiggyTex[9] = GRRLIB_LoadTexture(agndr_png);
+    shiggyTex[10] = GRRLIB_LoadTexture(trans_png);
+    shiggyTex[11] = GRRLIB_LoadTexture(lgbtq_png);
+    shiggyTex[12] = GRRLIB_LoadTexture(les_png);
+    shiggyTex[13] = GRRLIB_LoadTexture(gay_png);
+    shiggyTex[14] = GRRLIB_LoadTexture(bi_png);
     GRRLIB_BMFX_FlipH(shiggyTex[0], shiggyTex[3]);
     GRRLIB_FlushTex(shiggyTex[3]);
     font = GRRLIB_LoadTexture(font_png);
     GRRLIB_InitTileSet(font, 9, 16, 32);
-}
-
-void modify_textures() {
-
 }
 
 void free_textures() {

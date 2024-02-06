@@ -16,8 +16,9 @@ signed int timerSeconds = -3;
 int theme = 1;
 AESNDPB* shigCompleteVoice;
 int timer = 0;
+int skinTimer = 0;
 unsigned int skinNum = 0;
-
+bool showSkinName = false;
 /**
  * handler for controls so my code is less shit lmao
  */
@@ -32,6 +33,8 @@ void buttonHandler() {
             ++skinNum;
             skinNum %= SKIN_AMOUNT;
             shiggy.Skin = shiggySkins[skinNum];
+            skinTimer = 0;
+            showSkinName = true;
             return;
         }
         shiggy.shigCount = 0;
@@ -44,6 +47,8 @@ void buttonHandler() {
             if ((signed)skinNum < 0)
                 skinNum = SKIN_AMOUNT-1;
             shiggy.Skin = shiggySkins[skinNum];
+            skinTimer = 0;
+            showSkinName = true;
             return;
         }
         shiggy.shigCount = 0;
@@ -111,7 +116,6 @@ void WiimotePowerPressed(s32 chan) {
 int main(int argc, char **argv) {
 // init video
     init_textures();
-    modify_textures();
     GRRLIB_Init();
 // init input
     WPAD_Init();
@@ -135,6 +139,9 @@ int main(int argc, char **argv) {
 // main loop
     while (1) {
         timer++;
+        skinTimer++;
+        if (skinTimer >= 60)
+            showSkinName = false;
         if (timer >= 60) {
             timer = 0;
             --timerSeconds;
@@ -171,7 +178,7 @@ int main(int argc, char **argv) {
         GRRLIB_DrawPart(shiggy.x+320, shiggy.y-(hyperYCoords[10 - shiggy.hyperTimer]), frameIndex*64, 0, 64, 64, shiggyTex[shiggy.Skin.texNum], shiggy.angle, 2, 2, GRRLIB_WHITE);
         GRRLIB_SetMidHandle(shiggyTex[shiggy.Skin.texNum], true);
         if (timerSeconds > TIMER_STATE_TIMEOVER) {
-            double deciseconds = 10-((double)timer/60*10);
+            double deciseconds = 10-((double)timer/6);
             if (deciseconds >= 10)
                 deciseconds = 9;
             sprintf(str, "%u shigs, %u.%us left", shiggy.shigCount, timerSeconds, (int)deciseconds);
@@ -181,7 +188,9 @@ int main(int argc, char **argv) {
             sprintf(str, "%u shigs", shiggy.shigCount);
         } else sprintf(str, "+/START: Start Timer, -/B: Infinite");
         GRRLIB_SetAntiAliasing(false);
-        GRRLIB_Printf(320-(strlen(str)*9), 32, font, DARK_FG, 2, str);
+        GRRLIB_Printf(320-(strlen(str)*9), 32,  font, DARK_FG, 2, str);
+        if (showSkinName)
+            GRRLIB_Printf(320-(strlen(shiggy.Skin.name)*9), 448, font, DARK_FG, 2, shiggy.Skin.name);
         GRRLIB_Render();
         // for (int i = 1; i < 20; i++) VIDEO_WaitVsync();
     }
