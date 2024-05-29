@@ -8,17 +8,18 @@
 
 #include "main.h"
 
-int HWButton = -1;
-struct ShiggyData shiggy;
+AESNDPB* shigCompleteVoice;
+bool showSkinName = false;
 int frameCount = 10;
 int frameIndex = 0;
-signed int timerSeconds = -3;
+int HWButton = -1;
 int theme = 1;
-AESNDPB* shigCompleteVoice;
 int timer = 0;
 int skinTimer = 0;
+struct ShiggyData shiggy;
+signed int timerSeconds = -3;
 unsigned int skinNum = 0;
-bool showSkinName = false;
+
 /**
  * handler for controls so my code is less shit lmao
  */
@@ -28,39 +29,39 @@ void buttonHandler() {
             shiggy.hyperTimer = 9;
     }
     if ((WPAD_ButtonsDown(0)) || (PAD_ButtonsDown(0))) {
-    if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_PLUS) || (PAD_ButtonsDown(0) & PAD_BUTTON_START)) {
-        if ((WPAD_ButtonsHeld(0) & WPAD_BUTTON_B) || (PAD_ButtonsHeld(0) & PAD_BUTTON_Y)) {
-            ++skinNum;
-            skinNum %= SKIN_AMOUNT;
-            shiggy.Skin = shiggySkins[skinNum];
-            skinTimer = 0;
-            showSkinName = true;
-            return;
+        if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_PLUS) || (PAD_ButtonsDown(0) & PAD_BUTTON_START)) {
+            if ((WPAD_ButtonsHeld(0) & WPAD_BUTTON_B) || (PAD_ButtonsHeld(0) & PAD_BUTTON_Y)) {
+                ++skinNum;
+                skinNum %= SKIN_AMOUNT;
+                shiggy.Skin = shiggySkins[skinNum];
+                skinTimer = 0;
+                showSkinName = true;
+                return;
+            }
+            shiggy.shigCount = 0;
+            timerSeconds = 59;
+            timer = 0;
         }
-        shiggy.shigCount = 0;
-        timerSeconds = 59;
-        timer = 0;
-    }
-    if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_MINUS) || (PAD_ButtonsDown(0) & PAD_BUTTON_B)) {
-        if ((WPAD_ButtonsHeld(0) & WPAD_BUTTON_B) || (PAD_ButtonsHeld(0) & PAD_BUTTON_Y)) {
-            --skinNum;
-            if ((signed)skinNum < 0)
-                skinNum = SKIN_AMOUNT-1;
-            shiggy.Skin = shiggySkins[skinNum];
-            skinTimer = 0;
-            showSkinName = true;
-            return;
+        if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_MINUS) || (PAD_ButtonsDown(0) & PAD_BUTTON_B)) {
+            if ((WPAD_ButtonsHeld(0) & WPAD_BUTTON_B) || (PAD_ButtonsHeld(0) & PAD_BUTTON_Y)) {
+                --skinNum;
+                if ((signed)skinNum < 0)
+                    skinNum = SKIN_AMOUNT-1;
+                shiggy.Skin = shiggySkins[skinNum];
+                skinTimer = 0;
+                showSkinName = true;
+                return;
+            }
+            shiggy.shigCount = 0;
+            timerSeconds = -4;
+            timer = 0;
         }
-        shiggy.shigCount = 0;
-        timerSeconds = -4;
-        timer = 0;
-    }
-    if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_2) || (PAD_ButtonsDown(0) & PAD_TRIGGER_Z)) shiggy.x = shiggy.y = shiggy.angle = 0;
-    ++frameIndex;
-    frameIndex %= frameCount;
-    if (!frameIndex & ((timerSeconds >= 0) || (timerSeconds <= -5))) {
-        shigCompleteVoice = AESND_AllocateVoice(VoiceCallBack);
-        if (shigCompleteVoice) switch (shiggy.Skin.sndNum) {
+        if ((WPAD_ButtonsDown(0) & WPAD_BUTTON_2) || (PAD_ButtonsDown(0) & PAD_TRIGGER_Z)) shiggy.x = shiggy.y = shiggy.angle = 0;
+        ++frameIndex;
+        frameIndex %= frameCount;
+        if (!frameIndex & ((timerSeconds >= 0) || (timerSeconds <= -5))) {
+            shigCompleteVoice = AESND_AllocateVoice(VoiceCallBack);
+            if (shigCompleteVoice) switch (shiggy.Skin.sndNum) {
                 case SOUND_GLITCH:
                     AESND_PlayVoice(shigCompleteVoice, VOICE_STEREO16, concrete_glitch_raw, concrete_glitch_raw_size, 48000, 0, 0);
                     break;
@@ -79,9 +80,9 @@ void buttonHandler() {
                 default:
                     AESND_PlayVoice(shigCompleteVoice, VOICE_STEREO16, concrete_raw, concrete_raw_size, 48000, 0, 0);
                     break;
+            }
+            ++shiggy.shigCount;
         }
-        ++shiggy.shigCount;
-    }
     }
 }
 
@@ -89,14 +90,14 @@ void buttonHandler() {
  * Callback for the reset button on the Wii.
  */
 void WiiResetPressed() {
-	HWButton = SYS_RETURNTOMENU;
+    HWButton = SYS_RETURNTOMENU;
 }
 
 /**
  * Callback for the power button on the Wii.
  */
 void WiiPowerPressed() {
-	HWButton = SYS_POWEROFF;
+    HWButton = SYS_POWEROFF;
 }
 
 /**
@@ -104,7 +105,7 @@ void WiiPowerPressed() {
  * @param[in] chan The Wiimote that pressed the button
  */
 void WiimotePowerPressed(s32 chan) {
-	if (!chan) HWButton = SYS_POWEROFF;
+    if (!chan) HWButton = SYS_POWEROFF;
 }
 
 /**
@@ -114,29 +115,29 @@ void WiimotePowerPressed(s32 chan) {
  * @return 0 on clean exit, an error code otherwise
  */
 int main(int argc, char **argv) {
-// init video
+    // init video
     init_textures();
     GRRLIB_Init();
-// init input
+    // init input
     WPAD_Init();
     PAD_Init();
     WPAD_SetDataFormat(0, WPAD_FMT_BTNS_ACC_IR);
-// make the power and reset buttons work the way you would expect them to
+    // make the power and reset buttons work the way you would expect them to
     WPAD_SetPowerButtonCallback(WiimotePowerPressed);
     SYS_SetResetCallback(WiiResetPressed);
-	SYS_SetPowerCallback(WiiPowerPressed);
-// init sound
+    SYS_SetPowerCallback(WiiPowerPressed);
+    // init sound
     AESND_Init();
     GRRMOD_Init(true);
     GRRMOD_SetMOD(bz_pif_it, bz_pif_it_size);
     GRRMOD_Start();
-// the variable chunk (oooh! ahhh!)
+    // the variable chunk (oooh! ahhh!)
     char str[38];
     // int texture = 0; // aaaaAAAAAHHH // i only commented this line out instead of deleting it because the original comment was funny to me
     WPADData *wd;
     shiggy.x = shiggy.y = shiggy.angle = shiggy.shigCount = shiggy.hyperTimer = 0; // lmfao
     shiggy.Skin = shiggySkins[0];
-// main loop
+    // main loop
     while (1) {
         timer++;
         skinTimer++;
@@ -150,7 +151,7 @@ int main(int argc, char **argv) {
             if ((timerSeconds < -3) & !(timerSeconds <= -5))
                 timerSeconds = -3;
         }
-		if (HWButton != -1)
+        if (HWButton != -1)
             break;
         WPAD_ScanPads();
         PAD_ScanPads();
@@ -175,17 +176,32 @@ int main(int argc, char **argv) {
 
         if (WPAD_ButtonsHeld(0) || PAD_ButtonsHeld(0))
             buttonHandler();
-        GRRLIB_DrawPart(shiggy.x+320, shiggy.y-(hyperYCoords[10 - shiggy.hyperTimer]), frameIndex*64, 0, 64, 64, shiggyTex[shiggy.Skin.texNum], shiggy.angle, 2, 2, GRRLIB_WHITE);
+        GRRLIB_DrawPart(
+            shiggy.x+(shiggy.Skin.texRes*5), shiggy.y+(shiggy.Skin.texRes)-hyperYCoords[10 - shiggy.hyperTimer],
+                        frameIndex*shiggy.Skin.texRes, 0,
+                        shiggy.Skin.texRes,
+                        shiggy.Skin.texRes,
+                        shiggyTex[shiggy.Skin.texNum],
+                        shiggy.angle,
+                        128/shiggy.Skin.texRes, 128/shiggy.Skin.texRes,
+                        WHITE
+        );
         GRRLIB_SetMidHandle(shiggyTex[shiggy.Skin.texNum], true);
         if (timerSeconds > TIMER_STATE_TIMEOVER) {
             double deciseconds = 10-((double)timer/6);
             if (deciseconds >= 10)
                 deciseconds = 9;
-            sprintf(str, "%u shigs, %u.%us left", shiggy.shigCount, timerSeconds, (int)deciseconds);
+            if (shiggy.shigCount == 1) {
+                sprintf(str, "1 shig, %u.%us left", timerSeconds, (int)deciseconds);
+            } else sprintf(str, "%u shigs, %u.%us left", shiggy.shigCount, timerSeconds, (int)deciseconds);
         } else if (timerSeconds == TIMER_STATE_TIMEOVER) {
-            sprintf(str, "%u shigs in 60s", shiggy.shigCount);
+            if (shiggy.shigCount == 1) {
+                sprintf(str, "1 shig in 60s");
+            } else sprintf(str, "%u shigs in 60s", shiggy.shigCount);
         } else if (timerSeconds <= TIMER_STATE_GAMEOVER) {
-            sprintf(str, "%u shigs", shiggy.shigCount);
+            if (shiggy.shigCount == 1) {
+                sprintf(str, "1 shig");
+            } else sprintf(str, "%u shigs", shiggy.shigCount);
         } else sprintf(str, "+/START: Start Timer, -/B: Infinite");
         GRRLIB_SetAntiAliasing(false);
         GRRLIB_Printf(320-(strlen(str)*9), 32,  font, DARK_FG, 2, str);

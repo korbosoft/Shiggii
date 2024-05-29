@@ -12,6 +12,9 @@
 #include "lgbtq_png.h"
 #include "gay_png.h"
 #include "les_png.h"
+#include "one_bpp_png.h"
+#include "two_bpp_png.h"
+#include "vennie_png.h"
 #include "bi_png.h"
 #include "bz_pif_it.h"
 #include "font_png.h"
@@ -34,8 +37,8 @@
 
 #define DARK_BG      0x282828FF
 #define DARK_FG      0xD4BE98FF
-#define GRRLIB_WHITE 0xFFFFFFFF
-#define SKIN_AMOUNT 17
+#define WHITE 0xFFFFFFFF
+#define SKIN_AMOUNT 18
 
 GRRLIB_texImg *shiggyTex[SKIN_AMOUNT];
 GRRLIB_texImg *font;
@@ -54,8 +57,8 @@ int hyperYCoords[10] = {
 };
 
 struct ShiggySkin {
-    unsigned int texNum, sndNum;
-    char name[17];
+    unsigned int texNum, sndNum, texRes;
+    char name[11];
 };
 
 struct ShiggyData {
@@ -66,21 +69,24 @@ struct ShiggyData {
 };
 
 struct ShiggySkin shiggySkins[SKIN_AMOUNT] = {
-    {0, SOUND_DEFAULT,            {"Shiggy"}},
-    {1, SOUND_GLITCH,          {"Corrupted"}},
-    {2, SOUND_EXPLOD,         {"Shigsplode"}},
-    {5, SOUND_LOWQUALITY,         {"Shoggy"}},
-    {3, SOUND_REVERSE,            {"yggihS"}},
-    {4, SOUND_TROLOLO,           {"Shiggey"}},
-    {6, SOUND_DEFAULT,         {"Aromantic"}},
-    {7, SOUND_DEFAULT,           {"Asexual"}},
-    {8, SOUND_DEFAULT, {"Aromantic Asexual"}},
-    {9, SOUND_DEFAULT,           {"Agender"}},
-    {10, SOUND_DEFAULT,            {"Trans"}},
-    {11, SOUND_DEFAULT,           {"LGBTQ+"}},
-    {12, SOUND_DEFAULT,          {"Lesbian"}},
-    {13, SOUND_DEFAULT,              {"Gay"}},
-    {14, SOUND_DEFAULT,         {"Bisexual"}},
+    {0,  SOUND_DEFAULT,    64,     {"Shiggy"}},
+    {1,  SOUND_GLITCH,     64,  {"Corrupted"}},
+    {2,  SOUND_EXPLOD,     64, {"Shigsplode"}},
+    {3,  SOUND_REVERSE,    64,     {"yggihS"}},
+    {4,  SOUND_TROLOLO,    64,    {"Shiggey"}},
+    {5,  SOUND_LOWQUALITY, 64,     {"Shoggy"}},
+    {6,  SOUND_DEFAULT,    64,  {"Aromantic"}},
+    {7,  SOUND_DEFAULT,    64,    {"Asexual"}},
+    {8,  SOUND_DEFAULT,    64,    {"Aro Ace"}},
+    {9,  SOUND_DEFAULT,    64,    {"Agender"}},
+    {10, SOUND_DEFAULT,    64,      {"Trans"}},
+    {11, SOUND_DEFAULT,    64,     {"LGBTQ+"}},
+    {12, SOUND_DEFAULT,    64,    {"Lesbian"}},
+    {13, SOUND_DEFAULT,    64,        {"Gay"}},
+    {14, SOUND_DEFAULT,    64,   {"Bisexual"}},
+    {15, SOUND_DEFAULT,    64,       {"1bpp"}},
+    {16, SOUND_DEFAULT,    64,       {"2bpp"}},
+    {17, SOUND_DEFAULT,    64,     {"Vennie"}}
 };
 
 void init_textures() {
@@ -99,6 +105,9 @@ void init_textures() {
     shiggyTex[12] = GRRLIB_LoadTexture(les_png);
     shiggyTex[13] = GRRLIB_LoadTexture(gay_png);
     shiggyTex[14] = GRRLIB_LoadTexture(bi_png);
+    shiggyTex[15] = GRRLIB_LoadTexture(one_bpp_png);
+    shiggyTex[16] = GRRLIB_LoadTexture(two_bpp_png);
+    shiggyTex[17] = GRRLIB_LoadTexture(vennie_png);
     GRRLIB_BMFX_FlipH(shiggyTex[0], shiggyTex[3]);
     GRRLIB_FlushTex(shiggyTex[3]);
     font = GRRLIB_LoadTexture(font_png);
@@ -106,7 +115,7 @@ void init_textures() {
 }
 
 void free_textures() {
-    for (int i = 0; i <= 4; i++) {
+    for (int i = 0; i <= SKIN_AMOUNT-1; i++) {
         GRRLIB_FreeTexture(shiggyTex[i]);
     }
 }
