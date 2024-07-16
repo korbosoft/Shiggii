@@ -35,8 +35,8 @@
 #define SOUND_REVERSE    4
 #define SOUND_TROLOLO    5
 
-#define DARK_BG      0x282828FF
-#define DARK_FG      0xD4BE98FF
+#define DARK_BG      0x1E1E2EFF
+#define DARK_FG      0xCDD6F4FF
 #define WHITE 0xFFFFFFFF
 #define SKIN_AMOUNT 18
 
