@@ -6,18 +6,10 @@
 #include "shiggy2_png.h"
 #include "shiggy3_png.h"
 #include "shiggy4_png.h"
-#include "aro_png.h"
-#include "ace_png.h"
-#include "aroace_png.h"
-#include "agndr_png.h"
-#include "trans_png.h"
 #include "lgbtq_png.h"
-#include "gay_png.h"
-#include "les_png.h"
 #include "one_bpp_png.h"
 #include "two_bpp_png.h"
 #include "vennie_png.h"
-#include "bi_png.h"
 
 #include "font_png.h"
 
