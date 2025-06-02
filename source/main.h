@@ -5,7 +5,7 @@
 #define TIMER_STATE_GAMEOVER -4
 #define TIMER_STATE_TIMEOVER -1
 
-#define SKIN_AMOUNT 10
+#define SKIN_AMOUNT 11
 
 GRRLIB_texImg *shiggyTex[SKIN_AMOUNT];
 GRRLIB_texImg *font;
@@ -45,7 +45,8 @@ struct ShiggySkin shiggySkins[SKIN_AMOUNT] = {
     {6,  SOUND_DEFAULT,    64,       {"Woke"}},
     {7,  SOUND_DEFAULT,    64,       {"1bpp"}},
     {8,  SOUND_DEFAULT,    64,       {"2bpp"}},
-    {9,  SOUND_DEFAULT,    64,     {"Vennie"}}
+    {9,  SOUND_DEFAULT,    64,     {"Vennie"}},
+    {10, SOUND_MIRROR,     64,    {"Crawley"}}
 };
 
 void init_textures() {
@@ -59,6 +60,7 @@ void init_textures() {
     shiggyTex[7] = GRRLIB_LoadTexture(one_bpp_png);
     shiggyTex[8] = GRRLIB_LoadTexture(two_bpp_png);
     shiggyTex[9] = GRRLIB_LoadTexture(vennie_png);
+    shiggyTex[10] = GRRLIB_LoadTexture(crawley_png);
     GRRLIB_BMFX_FlipH(shiggyTex[0], shiggyTex[3]);
     GRRLIB_FlushTex(shiggyTex[3]);
     font = GRRLIB_LoadTexture(font_png);
@@ -66,7 +68,7 @@ void init_textures() {
 }
 
 void free_textures() {
-    for (int i = 0; i <= SKIN_AMOUNT-1; i++) {
+    for (int i = 0; i <= SKIN_AMOUNT - 1; i++) {
         GRRLIB_FreeTexture(shiggyTex[i]);
     }
 }

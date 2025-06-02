@@ -10,6 +10,7 @@
 #include "one_bpp_png.h"
 #include "two_bpp_png.h"
 #include "vennie_png.h"
+#include "crawley_png.h"
 
 #include "font_png.h"
 
@@ -23,6 +24,7 @@
 #include "concrete_glitch_raw.h"
 #include "yayayayay_raw.h"
 #include "explod_raw.h"
+#include "concrete_mirror_raw.h"
 
 #define SOUND_DEFAULT    0
 #define SOUND_GLITCH     1
@@ -30,6 +32,7 @@
 #define SOUND_LOWQUALITY 3
 #define SOUND_REVERSE    4
 #define SOUND_TROLOLO    5
+#define SOUND_MIRROR     6
 
 // Colors
 
